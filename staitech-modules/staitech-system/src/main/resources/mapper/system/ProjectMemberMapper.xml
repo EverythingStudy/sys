@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.staitech.system.mapper.ProjectMemberMapper">
+    <resultMap id="BaseResultMap" type="cn.staitech.system.domain.ProjectMember">
+        <id column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="project_id" jdbcType="BIGINT" property="projectId"/>
+        <result column="role_id" jdbcType="BIGINT" property="roleId"/>
+        <result column="role_type" jdbcType="INTEGER" property="roleType"/>
+        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+    </resultMap>
+
+
+    <select id="selectProject" parameterType="cn.staitech.system.domain.ProjectMember" resultMap="BaseResultMap">
+        select *
+        from tb_project_member
+        where user_id = #{userId,jdbcType=BIGINT}
+          and project_id = #{projectId,jdbcType=BIGINT}
+    </select>
+
+</mapper>

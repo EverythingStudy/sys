@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.staitech.system.mapper.SysOrganizationMapper">
+
+    <resultMap type="cn.staitech.system.domain.SysOrganization" id="SysOrganizationResult">
+        <result property="organizationId" column="organization_id"/>
+        <result property="organizationName" column="organization_name"/>
+        <result property="contactName" column="contact_name"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap type="cn.staitech.system.domain.vo.organization.OrganizationSelectResVo" id="OrganizationResult">
+        <result property="organizationId" column="organization_id"/>
+        <result property="organizationName" column="organization_name"/>
+        <result property="organizationNumber" column="organization_number"/>
+        <result property="contactName" column="contact_name"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createTime" column="create_time"/>
+        <result property="authorizationMemberLimit" column="authorization_member_limit"/>
+        <result property="authorizationMemberUsed" column="authorization_member_used"/>
+        <result property="authorizationImageLimit" column="authorization_image_limit"/>
+        <result property="authorizationImageUsed" column="authorization_image_used"/>
+        <result property="authorizationTime" column="authorization_time"/>
+        <result property="expirationTime" column="expiration_time"/>
+    </resultMap>
+
+    <resultMap type="cn.staitech.system.domain.SubImage" id="subImageResult">
+        <result property="imageId" column="image_id"/>
+    </resultMap>
+
+    <sql id="selectBy">
+        select organization_id
+             , organization_name
+             , contact_name
+             , phone_number
+             , status
+             , del_flag
+             , create_by
+             , create_time
+             , update_by
+             , update_time
+        from sys_organization
+    </sql>
+
+    <sql id="selectSysOrganization">
+        select o.organization_id
+             , o.organization_name
+             , o.contact_name
+             , o.phone_number
+             , o.status
+             , o.del_flag
+             , o.create_by
+             , o.create_time
+             , o.update_by
+             , o.update_time
+             ,o.organization_number
+             , a.authorization_member_limit
+             , a.authorization_member_used
+--              , a.authorization_image_limit
+--              , a.authorization_image_used
+             , a.authorization_time
+             , a.expiration_time
+        from sys_organization as o
+                 left join sys_organization_authorization as a on o.organization_id = a.organization_id
+    </sql>
+
+    <select id="selectPrimaryKey" parameterType="Long" resultMap="OrganizationResult">
+        <include refid="selectSysOrganization"/>
+        where o.organization_id = #{organizationId}
+    </select>
+
+    <select id="selectName" parameterType="cn.staitech.system.domain.SysOrganization" resultMap="SysOrganizationResult">
+        <include refid="selectBy"/>
+        <where>
+            del_flag = '0'
+            <if test="organizationName != null and organizationName != ''">
+                and organization_name = #{organizationName}
+            </if>
+            <if test="organizationId != null and organizationId != ''">
+                AND organization_id != #{organizationId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectList" parameterType="cn.staitech.system.domain.vo.organization.OrganizationSelectVo" resultMap="OrganizationResult">
+        <include refid="selectSysOrganization"/>
+        <where>
+            o.del_flag = 0
+            <if test="organizationName != null and organizationName != ''">
+                AND o.organization_name like concat('%', #{organizationName}, '%')
+            </if>
+            <if test="contactName != null and contactName != ''">
+                AND o.contact_name like concat('%', #{contactName}, '%')
+            </if>
+            <if test="phoneNumber != null and phoneNumber != ''">
+                AND o.phone_number like concat('%', #{phoneNumber}, '%')
+            </if>
+            <if test="status != null and status != 0">
+                AND o.status like concat('%', #{status}, '%')
+            </if>
+            <if test="createTimeParams != null">
+                <if test="createTimeParams.beginTime != null and createTimeParams.beginTime != ''"><!-- 开始时间检索 -->
+                    AND date_format(o.create_time,'%y%m%d') &gt;= date_format(#{createTimeParams.beginTime},'%y%m%d')
+                </if>
+                <if test="createTimeParams.endTime != null and createTimeParams.endTime != '' ">
+                    AND date_format(o.create_time,'%y%m%d') &lt;= date_format(#{createTimeParams.endTime},'%y%m%d')
+                </if>
+            </if>
+            <if test="authorizationTimeParams != null">
+                <if test="authorizationTimeParams.beginTime != null and authorizationTimeParams.beginTime != ''">
+                    AND date_format(a.authorization_time,'%y%m%d') &gt;=
+                    date_format(#{authorizationTimeParams.beginTime},'%y%m%d')
+                </if>
+                <if test="authorizationTimeParams.endTime != null and authorizationTimeParams.endTime != ''">
+                    AND date_format(a.authorization_time,'%y%m%d') &lt;=
+                    date_format(#{authorizationTimeParams.endTime},'%y%m%d')
+                </if>
+            </if>
+            <if test="expirationTimeParams != null">
+                <if test="expirationTimeParams.beginTime != null and expirationTimeParams.beginTime != ''">
+                    AND date_format(a.expiration_time,'%y%m%d') &gt;=
+                    date_format(#{expirationTimeParams.beginTime},'%y%m%d')
+                </if>
+                <if test="expirationTimeParams.endTime != null and expirationTimeParams.endTime != ''">
+                    AND date_format(a.expiration_time,'%y%m%d') &lt;=
+                    date_format(#{expirationTimeParams.endTime},'%y%m%d')
+                </if>
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectImageCount" parameterType="java.lang.Long" resultMap="subImageResult">
+        SELECT
+            si.special_image_id as image_id
+        FROM
+            sys_organization AS o
+                LEFT JOIN sys_user AS u ON u.organization_id = o.organization_id
+                LEFT JOIN tb_special_role_user AS spe ON spe.user_id = u.user_id
+                LEFT JOIN tb_special_image AS si ON si.special_id = spe.special_id
+        WHERE
+            o.organization_id = #{organizationId}
+          AND si.STATUS = 1
+    </select>
+
+
+    <insert id="insert" parameterType="cn.staitech.system.domain.SysOrganization" useGeneratedKeys="true"
+            keyProperty="organizationId">
+        insert into sys_organization (
+        <if test="organizationId != null and organizationId != '' ">organization_id,</if>
+        <if test="organizationName != null and organizationName != '' ">organization_name,</if>
+        <if test="organizationNumber != null and organizationNumber != '' ">organization_number,</if>
+        <if test="contactName != null and contactName != '' ">contact_name,</if>
+        <if test="phoneNumber != null and phoneNumber != '' ">phone_number,</if>
+        <if test="status != null and status != ''">status,</if>
+        <if test="delFlag != null and delFlag != ''">del_flag ,</if>
+        <if test="createBy != null and createBy != '' ">create_by,</if>
+        <if test="updateBy != null and updateBy != '' ">update_by,</if>
+        create_time,
+        update_time
+        )values(
+        <if test="organizationId != null and organizationId != ''">#{organizationId},</if>
+        <if test="organizationName != null and organizationName != ''">#{organizationName},</if>
+        <if test="organizationNumber != null and organizationNumber != '' ">#{organizationNumber},</if>
+        <if test="contactName != null and contactName != ''">#{contactName},</if>
+        <if test="phoneNumber != null and phoneNumber != ''">#{phoneNumber},</if>
+        <if test="status != null and status != ''">#{status},</if>
+        <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+        <if test="createBy != null and createBy != ''">#{createBy},</if>
+        <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+        sysdate(),
+        sysdate()
+        )
+    </insert>
+
+    <update id="delete" parameterType="cn.staitech.system.domain.SysOrganization" useGeneratedKeys="true"
+            keyProperty="organizationId">
+        update sys_organization
+        <set>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where organization_id = #{organizationId}
+    </update>
+
+
+    <update id="update" parameterType="cn.staitech.system.domain.SysOrganization" useGeneratedKeys="true"
+            keyProperty="organizationId">
+        update sys_organization
+        <set>
+            <if test="organizationName != null and organizationName != ''">organization_name = #{organizationName},</if>
+            <if test="contactName != null and contactName != ''">contact_name = #{contactName},</if>
+            <if test="phoneNumber != null and phoneNumber != ''">phone_number = #{phoneNumber},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="status != null">status = #{status},</if>
+            update_time = sysdate()
+        </set>
+        where organization_id = #{organizationId}
+    </update>
+
+    <select id="selectSpecialCount" parameterType="cn.staitech.system.domain.SpecialImage" resultType="int">
+        select count(image_id)
+        from tb_sub_image
+        <where>
+            is_delete = 0
+            <if test="sliceBatchNumber !=null">
+                AND slice_batch_number = #{sliceBatchNumber}
+            </if>
+            <if test="specialImageId !=null">
+                AND special_image_id = #{specialImageId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectOrganizationCode" resultType="java.lang.Integer">
+        select organization_number
+        from sys_organization
+        order by organization_number desc limit 1
+    </select>
+
+
+</mapper>

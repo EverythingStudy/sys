@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.staitech.job.mapper.NoticeMapper">
+
+
+    <!--如果需要筛选时间加上即可sql：select ts.special_number specialNumber, ts.special_name specialName, tsr.expire_time expireTime
+         from tb_special_reclaim tsr
+                  left join tb_special ts
+                            on tsr.special_id = ts.special_id
+         where tsr.reclaim_by = 1
+         and special_reclaim_id in (select max(mid.special_reclaim_id) from tb_special_reclaim mid  group by mid.special_id )
+         and datediff(tsr.expire_time,now())&lt;=7;-->
+    <select id="selectList" resultType="cn.staitech.job.domain.notice.out.NoticeQueryOut">
+        select ts.special_number specialNumber,
+               ts.special_name   specialName,
+               tsr.expire_time   expireTime,
+               tsr.reclaim_by    reclaimBy
+        from tb_special_reclaim tsr
+                 left join tb_special ts
+                           on tsr.special_id = ts.special_id
+        where special_reclaim_id in
+              (select max(mid.special_reclaim_id) from tb_special_reclaim mid group by mid.special_id)
+          and ts.del_flag = 1
+          and datediff(tsr.expire_time, now()) &lt;= 7
+    </select>
+    <insert id="insertBatch">
+        insert into
+        sys_notice(notice_title,notice_type,notice_content,status,recipient,create_by,create_time,update_by,update_time,remark)
+        values
+        <foreach collection="list" item="entity" separator=",">
+            (#{entity.noticeTitle},#{entity.noticeType},#{entity.noticeContent},#{entity.status},#{entity.recipient},#{entity.createBy},#{entity.createTime},#{entity.updateBy},#{entity.updateTime},#{entity.remark})
+        </foreach>
+
+    </insert>
+
+    <select id="selectNotice" resultType="java.lang.Integer">
+        select count(0)
+        from sys_notice
+        where notice_title = '专题回收'
+          and status = '0'
+          and notice_content = #{noticeContent}
+    </select>
+
+</mapper>

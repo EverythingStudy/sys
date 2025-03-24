@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.staitech.system.mapper.SysOrganizationAuthorizationMapper">
+
+    <resultMap type="cn.staitech.system.domain.SysOrganizationAuthorization" id="SysOrganizationAuthorizationResult">
+        <result property="organizationId" column="organization_id"/>
+        <result property="authorizationMemberLimit" column="authorization_member_limit"/>
+        <result property="authorizationMemberUsed" column="authorization_member_used"/>
+        <result property="authorizationImageLimit" column="authorization_image_limit"/>
+        <result property="authorizationImageUsed" column="authorization_image_used"/>
+        <result property="authorizationTime" column="authorization_time"/>
+        <result property="expirationTime" column="expiration_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectSysOrganizationAuthorization">
+        select organization_id
+             , authorization_member_limit
+             , authorization_member_used
+             , authorization_image_limit
+             , authorization_image_used
+             , authorization_time
+             , expiration_time
+             , create_by
+             , create_time
+             , update_by
+             , update_time
+        from sys_organization_authorization
+    </sql>
+
+
+    <select id="selectById" parameterType="Long"
+            resultMap="SysOrganizationAuthorizationResult">
+        <include refid="selectSysOrganizationAuthorization"/>
+        <where>
+            <if test="organizationId != null and organizationId != ''">
+                AND organization_id = #{organizationId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectList" parameterType="cn.staitech.system.domain.SysOrganizationAuthorization"
+            resultMap="SysOrganizationAuthorizationResult">
+        <include refid="selectSysOrganizationAuthorization"/>
+        <where>
+            <if test="authorizationTimeParams != null">
+                <if test="authorizationTimeParams.beginTime != null and authorizationTimeParams.beginTime != ''">
+                    AND date_format(authorization_time,'%y%m%d') &gt;=
+                    date_format(#{authorizationTimeParams.beginTime},'%y%m%d')
+                </if>
+                <if test="authorizationTimeParams.endTime != null and authorizationTimeParams.endTime != ''">
+                    AND date_format(authorization_time,'%y%m%d') &lt;=
+                    date_format(#{authorizationTimeParams.endTime},'%y%m%d')
+                </if>
+            </if>
+            <if test="expirationTimeParams != null">
+                <if test="expirationTimeParams.beginTime != null and expirationTimeParams.beginTime != ''">
+                    AND date_format(expiration_time,'%y%m%d') &gt;=
+                    date_format(#{expirationTimeParams.beginTime},'%y%m%d')
+                </if>
+                <if test="expirationTimeParams.endTime != null and expirationTimeParams.endTime != ''">
+                    AND date_format(expiration_time,'%y%m%d') &lt;=
+                    date_format(#{expirationTimeParams.endTime},'%y%m%d')
+                </if>
+            </if>
+            <if test="organizationId != null and organizationId != ''">
+                    AND organization_id = #{organizationId}
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="insert" parameterType="cn.staitech.system.domain.SysOrganizationAuthorization" useGeneratedKeys="true"
+            keyProperty="organizationId">
+        insert into sys_organization_authorization (
+        <if test="organizationId != null and organizationId != '' ">organization_id,</if>
+        <if test="authorizationMemberLimit != null and authorizationMemberLimit != '' ">authorization_member_limit,</if>
+        <if test="authorizationMemberUsed != null and authorizationMemberUsed != '' ">authorization_member_used,</if>
+        <if test="authorizationImageLimit != null and authorizationImageLimit != '' ">authorization_image_limit,</if>
+        <if test="authorizationImageUsed != null and authorizationImageUsed != ''">authorization_image_used ,</if>
+        <if test="authorizationTime != null and authorizationTime != '' ">authorization_time,</if>
+        <if test="expirationTime != null and expirationTime != '' ">expiration_time,</if>
+        <if test="createBy != null and createBy != '' ">create_by,</if>
+        <if test="updateBy != null and updateBy != '' ">update_by,</if>
+        create_time,
+        update_time
+        )values(
+        <if test="organizationId != null and organizationId != ''">#{organizationId},</if>
+        <if test="authorizationMemberLimit != null and authorizationMemberLimit != ''">#{authorizationMemberLimit},</if>
+        <if test="authorizationMemberUsed != null and authorizationMemberUsed != ''">#{authorizationMemberUsed},</if>
+        <if test="authorizationImageLimit != null and authorizationImageLimit != ''">#{authorizationImageLimit},</if>
+        <if test="authorizationImageUsed != null and authorizationImageUsed != ''">#{authorizationImageUsed},</if>
+        <if test="authorizationTime != null and authorizationTime != ''">#{authorizationTime},</if>
+        <if test="expirationTime != null and expirationTime != '' ">#{expirationTime},</if>
+        <if test="createBy != null and createBy != ''">#{createBy},</if>
+        <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+        sysdate(),
+        sysdate()
+        )
+    </insert>
+
+    <update id="update" parameterType="cn.staitech.system.domain.SysOrganizationAuthorization" useGeneratedKeys="true"
+            keyProperty="organizationId">
+        update sys_organization_authorization
+        <set>
+            <if test="authorizationMemberLimit != null and authorizationMemberLimit != ''">authorization_member_limit =
+                #{authorizationMemberLimit},
+            </if>
+            <if test="authorizationImageLimit != null and authorizationImageLimit != ''">authorization_image_limit =
+                #{authorizationImageLimit},
+            </if>
+            <if test="authorizationTime != null and authorizationTime != ''">authorization_time =
+                #{authorizationTime},
+            </if>
+            <if test="expirationTime != null and expirationTime != ''">expiration_time = #{expirationTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where organization_id = #{organizationId}
+    </update>
+
+
+</mapper>

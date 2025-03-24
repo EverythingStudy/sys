@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.staitech.job.mapper.ErisAlgorithmMapper">
+    <resultMap type="cn.staitech.job.domain.algorithm.ErisAlgorithm" id="ErisAlgorithmMap">
+        <result property="relevanceId" column="relevance_id"/>
+        <result property="specialImageId" column="special_image_id"/>
+    </resultMap>
+
+    <!-- 通过ID查询单条数据 -->
+    <select id="queryAllByLimit" resultMap="ErisAlgorithmMap">
+        select tasi.special_image_id, tasi.relevance_id,tasi.algorithm_uuid
+        from eris_algorithm ea
+                 left join tb_algorithm_special_image tasi
+                           on ea.algorithm_uuid = tasi.algorithm_uuid
+        where tasi.status = 1
+          and TIMESTAMPDIFF(MINUTE, tasi.update_time, now()) > (ea.waste_time + 1)
+    </select>
+
+    <update id="updateSpecialImage">
+        update tb_special_image
+        set slice_image_status=4
+        where special_image_id = #{specialImageId}
+    </update>
+
+    <delete id="deleteAlgorithm">
+        delete
+        from tb_algorithm_special_image
+
+        where relevance_id = #{relevanceId}
+    </delete>
+
+    <update id="updateAlgorithm">
+        update tb_algorithm_special_image
+        set status=4
+        where relevance_id = #{relevanceId}
+    </update>
+</mapper>

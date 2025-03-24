@@ -1,0 +1,82 @@
+# Tomcat
+server:
+  port: 8080
+  max-idle-time: 60000
+  ssl:
+    enabled: false
+  netty:
+    connection-timeout: 60000
+  tomcat:
+    connection-timeout: 60000
+
+# Spring
+spring: 
+  application:
+    # 应用名称
+    name: staitech-gateway
+  profiles:
+    # 环境配置
+    active: @activatedProperties@
+  main:
+    allow-circular-references: true
+    allow-bean-definition-overriding: true
+  cloud:
+    gateway:
+      httpclient:
+        connect-timeout: 2000
+        pool:
+          #maxIdleTime: PT1S
+          # 线程池类型，ELASTIC：弹性，FIXED：固定
+          type: FIXED
+          # 超过此时间连接不使用就关闭 maxIdleTime: 20000
+          max-idle-time: PT60S
+          # 线程池最大连接数，type=FIXED时有效
+          max-connections: 100000
+          # 从线程池获取线程的最大等待时间，type=FIXED时有效
+          acquire-timeout: 600000
+          response-timeout: PT60S
+          # response-timeout: PT30S
+          #System.setProperty("reactor.netty.pool.leasingStrategy", "lifo");
+          #spring.cloud.gateway.httpclient.pool.max-idle-time=PT1S
+          #spring.cloud.gateway.httpclient.connect-timeout=2000
+          #spring.cloud.gateway.httpclient.response-timeout=PT30S
+    nacos:
+      discovery:
+        # 服务注册地址
+        server-addr: @serverAddr@
+        # nacos namespace
+        namespace: @nacosNamespace@
+        # nacos group
+        group: @nacosGroup@
+        metadata:
+          response-timeout: 10000
+          connect-timeout: 3000
+      config:
+        # 配置中心地址
+#        enabled: false
+#        refresh-enabled: false
+        server-addr: @serverAddr@
+        # 配置文件格式
+        file-extension: yml
+        # nacos namespace
+        namespace: @nacosNamespace@
+        # nacos group
+        group: @nacosGroup@
+        # 共享配置
+        shared-configs:
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+    sentinel:
+      # 取消控制台懒加载
+      eager: true
+      transport:
+        # 控制台地址
+        dashboard: 192.168.63.168:8718
+      # nacos配置持久化
+      datasource:
+        ds1:
+          nacos:
+            server-addr: @serverAddr@
+            dataId: sentinel-staitech-gateway
+            groupId: DEFAULT_GROUP
+            data-type: json
+            rule-type: flow

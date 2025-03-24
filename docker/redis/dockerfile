@@ -1,0 +1,13 @@
+# 基础镜像
+FROM redis
+# author
+MAINTAINER staitech
+
+# 挂载目录
+VOLUME /home/staitech/redis
+# 创建目录
+RUN mkdir -p /home/staitech/redis
+# 指定路径
+WORKDIR /home/staitech/redis
+# 复制conf文件到路径
+COPY ./conf/redis.conf /home/staitech/redis/redis.conf

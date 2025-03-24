@@ -1,0 +1,14 @@
+Spring Boot Version: ${spring-boot.version}
+Spring Application Name: ${spring.application.name}
+active: ${spring.profiles.active}
+namespace: ${spring.cloud.nacos.config.namespace}
+group: ${spring.cloud.nacos.config.group}
+application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+                  _
+                 | |
+ ___  _   _  ___ | |_   ___  _ __ ___
+/ __|| | | |/ __|| __| / _ \| '_ ` _ \
+\__ \| |_| |\__ \| |_ |  __/| | | | | |
+|___/ \__, ||___/ \__| \___||_| |_| |_|
+       __/ |
+      |___/

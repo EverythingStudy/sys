@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.staitech.system.mapper.SysUserExtMapper">
+
+    <resultMap type="cn.staitech.system.api.domain.SysUser" id="SysUserResult">
+        <id property="userId" column="user_id"/>
+        <result property="userCode" column="user_code"/>
+        <result property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="organizationId" column="organization_id"/>
+        <result property="organizationName" column="organization_name"/>
+        <result property="userName" column="user_name"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="userType" column="user_type"/>
+        <result property="dept" column="dept"/>
+        <result property="email" column="email"/>
+        <result property="phonenumber" column="phonenumber"/>
+        <result property="sex" column="sex"/>
+        <result property="password" column="password"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="loginStatus" column="login_status"/>
+        <result property="loginIp" column="login_ip"/>
+        <result property="loginDate" column="login_date"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        user_id
+        , user_code, role_id, organization_id, user_name, nick_name, user_type, dept,
+        email, phonenumber, sex, password, status, del_flag, login_status, login_ip, login_date,
+        create_by, create_time, update_by, update_time
+    </sql>
+
+    <sql id="Base_Column_List2">
+        u
+        .
+        user_id
+        , u.user_code, u.role_id, u.organization_id,o.organization_name, u.user_name, u.nick_name, u.user_type, u.dept,
+        u.email, u.phonenumber, u.sex, u.password, u.status, u.del_flag, u.login_status, u.login_ip, u.login_date,
+        u.create_by, u.create_time, u.update_by, u.update_time
+    </sql>
+    <!--           AND u.create_time &lt;= #{endTime}-->
+    <select id="selectUserList" parameterType="cn.staitech.system.api.domain.SysUser" resultMap="SysUserResult">
+        select
+        distinct u.user_id, u.user_code, u.organization_id,o.organization_name, u.user_name, u.nick_name,
+        u.user_type, u.dept,u.email, u.phonenumber, u.sex, u.password, u.status, u.del_flag, u.login_status, u.login_ip,
+        u.login_date,u.create_by, u.create_time, u.update_by, u.update_time
+        from sys_user u
+        left join sys_user_role ur
+        on u.user_id = ur.user_id
+        left join sys_organization o
+        on u.organization_id=o.organization_id
+        where u.del_flag = '0'
+        <if test="loginRole != null and loginRole != 1L">
+            AND u.organization_id=#{loginOrganization}
+        </if>
+        <if test="userId != null and userId != 0">
+            AND u.user_id = #{userId}
+        </if>
+        <if test="nickName != null and nickName != ''">
+            AND u.nick_name like concat('%', #{nickName}, '%')
+        </if>
+        <if test="userName != null and userName != ''">
+            AND u.user_name like concat('%', #{userName}, '%')
+        </if>
+        <if test="roleId != null and roleId != ''">
+            AND u.role_id = #{roleId}
+        </if>
+
+        <if test="roleIds != null and roleIds.length >0">
+            AND ur.role_id in
+            <foreach collection="roleIds" item="value" separator=',' open="(" close=")">
+                #{value}
+            </foreach>
+        </if>
+        <if test="status != null and status != ''">
+            AND u.status = #{status}
+        </if>
+        <if test="organizationName != null and organizationName != ''">
+            AND u.organization_id in(select so.organization_id from sys_organization so where so.organization_name like
+            concat('%', #{organizationName}, '%'))
+        </if>
+        <if test="phonenumber != null and phonenumber != ''">
+            AND u.phonenumber like concat('%', #{phonenumber}, '%')
+        </if>
+        <if test="beginTime != null "><!-- 开始时间检索 -->
+            AND date_format(u.create_time,'%Y-%m-%d') &gt;= date_format(#{beginTime},'%Y-%m-%d')
+        </if>
+        <if test="endTime != null "><!-- 结束时间检索 -->
+            AND date_format(u.create_time,'%Y-%m-%d') &lt;= date_format(#{endTime},'%Y-%m-%d')
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+        order by u.create_time desc
+    </select>
+
+    <select id="selectUserByUserName" parameterType="String" resultMap="SysUserResult">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_user
+        where user_name = #{userName}
+        and del_flag='0'
+    </select>
+
+    <select id="selectUserById" parameterType="java.lang.Long" resultMap="SysUserResult">
+        select
+        <include refid="Base_Column_List2"/>
+        from sys_user u left join sys_organization o
+        on u.organization_id=o.organization_id
+        where user_id = #{userId}
+    </select>
+
+    <select id="checkUserNameUnique" parameterType="String" resultType="int">
+        select count(1)
+        from sys_user
+        where user_name = #{userName}
+          and del_flag = 0 limit 1
+    </select>
+
+    <select id="checkPhoneUnique" parameterType="String" resultMap="SysUserResult">
+        select user_id, phonenumber
+        from sys_user
+        where phonenumber = #{phonenumber}
+          and del_flag = 0 limit 1
+    </select>
+
+    <select id="checkEmailUnique" parameterType="String" resultMap="SysUserResult">
+        select user_id, email
+        from sys_user
+        where email = #{email}
+          and del_flag = 0 limit 1
+    </select>
+
+    <select id="checkOrganization" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select authorization_member_limit - authorization_member_used
+        from sys_organization_authorization
+        where organization_id = #{organizationId}
+    </select>
+
+    <insert id="insertUser" parameterType="cn.staitech.system.api.domain.SysUser" useGeneratedKeys="true"
+            keyProperty="userId">
+        insert into sys_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="userCode != null">
+                user_code,
+            </if>
+            <if test="roleId != null">
+                role_id,
+            </if>
+            <if test="organizationId != null">
+                organization_id,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="nickName != null">
+                nick_name,
+            </if>
+            <if test="dept != null">
+                dept,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="phonenumber != null">
+                phonenumber,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            create_time,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="userCode != null">
+                #{userCode,jdbcType=INTEGER},
+            </if>
+            <if test="roleId != null">
+                #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="organizationId != null">
+                #{organizationId,jdbcType=BIGINT},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="nickName != null">
+                #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="dept != null">
+                #{dept,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="phonenumber != null">
+                #{phonenumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=CHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=CHAR},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=BIGINT},
+            </if>
+            sysdate()
+        </trim>
+    </insert>
+
+    <update id="updateUser" parameterType="cn.staitech.system.api.domain.SysUser">
+        update sys_user
+        <set>
+
+            <if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
+            <if test="email != null ">email = #{email},</if>
+            <if test="phonenumber != null ">phonenumber = #{phonenumber},</if>
+            <if test="sex != null and sex != ''">sex = #{sex},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="loginIp != null and loginIp != ''">login_ip = #{loginIp},</if>
+            <if test="loginDate != null">login_date = #{loginDate},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="roleId != null">role_id = #{roleId},</if>
+            <if test="organizationId != null">organization_id = #{organizationId},</if>
+            <if test="dept != null">dept = #{dept},</if>
+            update_time = sysdate()
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <update id="updateUserLoginStatus" parameterType="cn.staitech.system.api.domain.SysUser">
+        update sys_user
+        set login_status = #{loginStatus},
+            password=#{password}
+        where user_id = #{userId}
+    </update>
+
+    <update id="resetUserPwd" parameterType="cn.staitech.system.api.domain.SysUser">
+        update sys_user
+        set password    = #{password},
+            login_status= '1'
+        where user_name = #{userName}
+    </update>
+
+    <update id="updateOrganizationNum" parameterType="java.lang.Long">
+        update sys_organization_authorization
+        set authorization_member_used=(select count(*)
+                                       from sys_user su
+                                       where su.organization_id = #{organizationId} and su.del_flag = 0)
+        where organization_id = #{organizationId}
+    </update>
+    <select id="selectOrganizationList" resultType="cn.staitech.system.domain.user.out.OrganizationListQueryOut">
+        select o.organization_id organizationId,
+        o.organization_name organizationName,
+
+        case status
+        when 1 then 1
+        else (case
+        when date_format(a.expiration_time, '%y%m%d') >=
+        date_format(now(), '%y%m%d') then 0
+        else 1 end)
+        end state
+        from sys_organization o
+        join sys_organization_authorization a
+        on o.organization_id = a.organization_id
+        where o.del_flag = '0'
+        <if test="organizationId !=null and organizationId != ''">
+            and o.organization_id = #{organizationId}
+        </if>
+
+    </select>
+
+    <select id="selectOrganization" parameterType="java.lang.Long" resultMap="SysUserResult">
+        select user_id,
+               organization_id
+        from sys_user
+        where organization_id = #{organizationId}
+          and del_flag = '0'
+    </select>
+
+    <select id="querySpecialRoleListByAdmin" resultType="cn.staitech.system.api.domain.SpecialRole">
+        SELECT special_id specialId, '*:*:*'
+        FROM tb_special
+    </select>
+
+    <select id="querySpecialRoleListByUserId" resultType="cn.staitech.system.api.domain.SpecialRole">
+        select srm.role_id    roleId,
+               srm.menu_id    menuId,
+               sm.perms,
+               sru.user_id    userId,
+               sru.special_id specialId,
+               sr.role_name   roleName
+        from tb_special_role_menu srm
+                 left join tb_special_menu sm
+                           on sm.menu_id = srm.menu_id
+                 left join tb_special_role_user sru
+                           on srm.role_id = sru.role_id
+                 left join tb_special_role sr
+                           on sru.role_id = sr.role_id
+        where sru.user_id = #{userId};
+    </select>
+
+    <select id="selectUserCode" resultType="java.lang.Integer">
+        select user_code
+        from sys_user
+        order by user_code desc limit 1
+    </select>
+
+</mapper> 

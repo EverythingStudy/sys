@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  cn.staitech.common.security.config.WebMvcConfig,\
+  cn.staitech.common.security.service.TokenService,\
+  cn.staitech.common.security.aspect.PreAuthorizeAspect,\
+  cn.staitech.common.security.aspect.InnerAuthAspect,\
+  cn.staitech.common.security.handler.GlobalExceptionHandler

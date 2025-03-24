@@ -1,0 +1,175 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>cn.staitech</groupId>
+        <artifactId>staitech</artifactId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>staitech-gateway</artifactId>
+
+    <description>
+        staitech-gateway网关模块
+    </description>
+
+    <dependencies>
+
+        <!-- SpringCloud Gateway -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Alibaba Nacos -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Alibaba Nacos Config -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Alibaba Sentinel -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Alibaba Sentinel Gateway -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
+        </dependency>
+
+        <!-- Sentinel Datasource Nacos -->
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-datasource-nacos</artifactId>
+        </dependency>
+
+        <!-- SpringBoot Actuator -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Loadbalancer -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-loadbalancer</artifactId>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.cloud</groupId>-->
+<!--            <artifactId>spring-cloud-starter-loadbalancer</artifactId>-->
+<!--        </dependency>-->
+
+        <!--验证码 -->
+        <dependency>
+            <groupId>com.github.penggle</groupId>
+            <artifactId>kaptcha</artifactId>
+        </dependency>
+
+        <!-- StAitech Anno Common Redis-->
+        <dependency>
+            <groupId>cn.staitech</groupId>
+            <artifactId>staitech-common-redis</artifactId>
+        </dependency>
+
+        <!-- Swagger -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${swagger.fox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${swagger.fox.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.7.16</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+    </dependencies>
+
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!--配置profiles环境-->
+    <profiles>
+        <profile>
+            <!--开发环境-->
+            <id>pacmvsdev</id>
+            <properties>
+                <activatedProperties>pacmvsdev</activatedProperties>
+                <nacosNamespace>pacmvsdev</nacosNamespace>
+                <nacosAddress>http://192.168.52.224/:8848</nacosAddress>
+                <nacosGroup>DEFAULT_GROUP</nacosGroup>
+                <serverAddr>192.168.52.224:8848</serverAddr>
+            </properties>
+        </profile>
+
+        <profile>
+            <!--测试环境-->
+            <id>testpvcmvs</id>
+            <properties>
+                <activatedProperties>testpvcmvs</activatedProperties>
+                <nacosNamespace>301f5c59-5f9c-451c-a77b-88d64ddfd9f0</nacosNamespace>
+                <nacosAddress>http://192.168.160.105:8848</nacosAddress>
+                <nacosGroup>DEFAULT_GROUP</nacosGroup>
+                <serverAddr>192.168.160.105:8848</serverAddr>
+            </properties>
+        </profile>
+        <profile>
+            <!--生产环境-->
+            <id>pathmedics</id>
+            <properties>
+                <activatedProperties>pathmedics</activatedProperties>
+                <nacosNamespace>40438ad6-00f6-4524-8043-4e79819cccf0</nacosNamespace>
+                <nacosAddress>http://10.10.4.13:8848</nacosAddress>
+                <nacosGroup>DEFAULT_GROUP</nacosGroup>
+                <serverAddr>10.10.4.13:8848</serverAddr>
+            </properties>
+        </profile>
+    </profiles>
+
+</project>

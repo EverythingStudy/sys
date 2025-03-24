@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  cn.staitech.system.api.factory.RemoteUserFallbackFactory,\
+  cn.staitech.system.api.factory.RemoteLogFallbackFactory, \
+  cn.staitech.system.api.factory.RemoteFileFallbackFactory

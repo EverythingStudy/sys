@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>cn.staitech</groupId>
+        <artifactId>staitech</artifactId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <modules>
+        <module>staitech-common-log</module>
+        <module>staitech-common-core</module>
+        <module>staitech-common-redis</module>
+        <module>staitech-common-swagger</module>
+        <module>staitech-common-security</module>
+        <module>staitech-common-datascope</module>
+		<module>staitech-common-datasource</module>
+    </modules>
+
+    <artifactId>staitech-common</artifactId>
+    <packaging>pom</packaging>
+
+    <description>
+	    staitech-common通用模块
+    </description>
+
+</project>
