@@ -47,7 +47,7 @@ public class TokenController {
         }
     }
 
-    @ApiOperation(value = "登录2.0", notes = "登录-wudi")
+    @ApiOperation(value = "登录2.0", notes = "登录")
     @PostMapping("/login")
     public R<LoginOut> login(@RequestBody LoginBody form) {
         // 用户登录

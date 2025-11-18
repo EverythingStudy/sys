@@ -63,7 +63,6 @@ public class SysUserController extends BaseController {
      * @return 用户列表
      */
     @ApiOperation(value = "用户列表接口-分页")
-    // @RequiresPermissions(value = {"system:user:query", "projectConfig:users:list"}, logical = Logical.OR)
     @PostMapping("/list")
     public R<PageResponse<SysUser>> list(@RequestBody @Validated UserListQeuryIn req) {
         PageResponse<SysUser> resp = userService.selectUserListExt(req);
@@ -120,7 +119,6 @@ public class SysUserController extends BaseController {
      * @return 用户信息
      */
     @ApiOperation(value = "获取用户信息")
-//    @RequiresPermissions("system:user:query")
     @GetMapping("/getInfo")
     public R<UserInfoGetOut> getInfo() {
         UserInfoGetOut resp = userService.getInfo();
@@ -131,7 +129,6 @@ public class SysUserController extends BaseController {
      * 根据用户编号获取详细信息
      */
     @ApiOperation(value = "根据用户编号获取详细信息:修改前查询")
-    //@RequiresPermissions("system:user:query")
     @GetMapping(value = {"{userId}"})
     public R<UserQeuryOut> getInfo(@PathVariable(value = "userId", required = false) Long userId) {
 
@@ -185,7 +182,6 @@ public class SysUserController extends BaseController {
     /**
      * 重置密码
      */
-    @ApiOperationSupport(author = "wudi")
     @ApiOperation(value = "重置密码(修改账号密码状态)")
     @RequiresPermissions("system:user:resetpwd")
     @Log(title = "重置密码", menu = "系统管理", subMenu = "用户管理", businessType = BusinessType.UPDATE)
@@ -201,7 +197,7 @@ public class SysUserController extends BaseController {
     /**
      * 状态修改
      */
-    @ApiOperation(value = "状态修改2.0", notes = "状态修改-wudi")
+    @ApiOperation(value = "状态修改2.0", notes = "状态修改")
     @RequiresPermissions("system:user:status")
     @Log(title = "状态修改", menu = "系统管理", subMenu = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
@@ -212,19 +208,18 @@ public class SysUserController extends BaseController {
     /**
      * 修改密码
      */
-    @ApiOperation(value = "修改密码2.0", notes = "密码修改-wudi")
-    //@RequiresPermissions("system:user:resetpwd")
+    @ApiOperation(value = "修改密码2.0", notes = "密码修改")
     @Log(title = "修改密码", menu = "系统管理", subMenu = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/updatePwd")
     public R updatePwd(@RequestBody @Validated PassWordUpdateIn req) {
         return userService.updatePwd(req);
     }
 
-    @ApiOperation(value = "机构下拉框2.0", notes = "机构下拉框-wudi")
+    @ApiOperation(value = "机构下拉框2.0", notes = "机构下拉框")
     @GetMapping("/getOrganizationList")
     public R<List<OrganizationListQueryOut>> getOrganizationList() {
         List<OrganizationListQueryOut> resp = userService.selectOrganizationList();
         return R.ok(resp);
-
     }
+
 }

@@ -8,7 +8,7 @@
         <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    
+
     <artifactId>staitech-api-system</artifactId>
 
     <description>
@@ -16,7 +16,7 @@
     </description>
 
     <dependencies>
-		
+
         <!-- StAitech Anno Common Core-->
         <dependency>
             <groupId>cn.staitech</groupId>
@@ -25,6 +25,8 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+<!--            <scope>provided</scope>-->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

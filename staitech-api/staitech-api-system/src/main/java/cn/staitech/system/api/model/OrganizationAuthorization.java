@@ -1,7 +1,6 @@
 package cn.staitech.system.api.model;
 
 
-import cn.staitech.common.core.web.domain.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

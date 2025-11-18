@@ -486,6 +486,37 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public boolean registerUser(SysUser user) {
+
+            // 1. 验证用户名、邮箱、手机号唯一性
+//            validateUserUniqueness(request);
+//
+//            // 2. 密码强度校验
+//            PasswordUtil.validateStrength(request.getPassword());
+//
+//            // 3. 生成密码哈希和盐值
+//            String salt = PasswordUtil.generateSalt();
+//            String passwordHash = PasswordUtil.hashPassword(request.getPassword(), salt);
+//
+//            // 4. 创建用户实体
+//            UserEntity user = new UserEntity();
+//            user.setUsername(request.getUsername());
+//            user.setEmail(request.getEmail());
+//            user.setPhone(request.getPhone());
+//            user.setPasswordHash(passwordHash);
+//            user.setPasswordSalt(salt);
+//            user.setUserStatus(UserStatus.ACTIVE);
+//
+//            // 5. 保存用户
+//            UserEntity savedUser = userRepository.save(user);
+//
+//            // 6. 创建用户资料
+//            createUserProfile(savedUser.getId(), request);
+//
+//            // 7. 清除相关缓存
+//            redisTemplate.delete("user:" + savedUser.getUsername());
+//
+//            return UserConverter.toResponse(savedUser);
+
         return userMapper.insertUser(user) > 0;
     }
 
