@@ -19,36 +19,28 @@ import reactor.core.publisher.Mono;
  */
 @Order(-1)
 @Configuration
-public class GatewayExceptionHandler implements ErrorWebExceptionHandler
-{
+public class GatewayExceptionHandler implements ErrorWebExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GatewayExceptionHandler.class);
 
     @Override
-    public Mono<Void> handle(ServerWebExchange exchange, Throwable ex)
-    {
+    public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
         ServerHttpResponse response = exchange.getResponse();
-    
-        log.error("[网关异常处理]请求路径:{},异常信息:{}", exchange.getRequest().getPath(), ex.getMessage());
-        
 
-        if (exchange.getResponse().isCommitted())
-        {
+        log.error("[网关异常处理]请求路径:{},异常信息:{}", exchange.getRequest().getPath(), ex.getMessage());
+
+
+        if (exchange.getResponse().isCommitted()) {
             return Mono.error(ex);
         }
 
         String msg;
 
-        if (ex instanceof NotFoundException)
-        {
+        if (ex instanceof NotFoundException) {
             msg = "服务未找到";
-        }
-        else if (ex instanceof ResponseStatusException)
-        {
+        } else if (ex instanceof ResponseStatusException) {
             ResponseStatusException responseStatusException = (ResponseStatusException) ex;
             msg = responseStatusException.getMessage();
-        }
-        else
-        {
+        } else {
             msg = "内部服务器错误";
         }
 

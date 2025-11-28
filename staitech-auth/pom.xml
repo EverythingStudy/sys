@@ -65,7 +65,10 @@
             <groupId>cn.staitech</groupId>
             <artifactId>staitech-common-security</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -97,6 +100,19 @@
 
     <!--配置profiles环境-->
     <profiles>
+        <profile>
+            <!--开发环境-->
+            <id>local</id>
+            <properties>
+                <!-- 激活 local 配置 -->
+                <activatedProperties>local</activatedProperties>
+                <!-- 这三项对 local 模式无效，但必须留空，避免占位符报错 -->
+                <nacosNamespace></nacosNamespace>
+                <nacosAddress></nacosAddress>
+                <nacosGroup></nacosGroup>
+                <serverAddr></serverAddr>
+            </properties>
+        </profile>
         <profile>
             <!--开发环境-->
             <id>pacmvsdev</id>

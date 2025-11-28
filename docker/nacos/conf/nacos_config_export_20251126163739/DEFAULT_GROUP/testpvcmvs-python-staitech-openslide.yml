@@ -1,0 +1,40 @@
+# mysql  
+mysql:
+  host: 192.168.160.105:3306
+  db: pathmedics
+  username: shengtong
+  password: shengtong
+  characterEncoding: utf8
+  useSSL: true
+  useUnicode: true
+  serverTimezone: GMT%2B8
+
+# redis
+redis:
+  host: 192.168.52.164
+  port: 6379
+  db: 0
+  password: shengtong
+
+#RabbitMQ
+rabbitmq:
+  host: 192.168.52.164
+  port: 5672
+  username: guest
+  password: guest
+  # 手动提交消息
+  listenerSimpleAcknowledgeMode: manual
+  listenerDirectAcknowledgeMode: manual
+
+# openSlide相关配置
+openslide:
+  # 切割的图片像素
+  imgSize: 256
+  # 切割的图片类型 
+  imgType: jpg
+
+
+SQLALCHEMY_DATABASE_URI: mysql://shengtong:shengtong@192.168.160.105:3306/pathmedics?charset=utf8mb4
+
+
+

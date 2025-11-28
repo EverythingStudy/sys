@@ -1,0 +1,26 @@
+# spring配置
+spring: 
+  redis:
+    host: 192.168.52.164
+    port: 6379
+    password: shengtong 
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.160.105:3306/pathmedics?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
+    username: shengtong
+    password: shengtong
+  elasticsearch:
+    uris: http://192.168.52.164:9200
+# mybatis配置
+mybatis:
+    # 搜索指定包别名
+    typeAliasesPackage: cn.staitech.job.domain
+    # 配置mapper的扫描，找到所有的mapper.xml映射文件
+    mapperLocations: classpath:mapper/**/*.xml
+
+# swagger配置
+swagger:
+  title: 定时任务接口文档
+  license: Powered By staitech
+  licenseUrl: http://wwww.staitech.cn
+algorithm.uuid: 20230812_slide

@@ -1,0 +1,73 @@
+feign:
+  httpclient:
+    connection-timeout: 30000
+# spring配置
+spring:
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+  redis:
+    host: 192.168.52.164
+    port: 6379
+    password: shengtong
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.160.105:3306/pathmedics?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
+    username: shengtong
+    password: shengtong
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      connection-timeout: 5000
+      validation-timeout: 5000
+      auto-commit: true
+      pool-name: "bizHikariCP"
+      connection-test-query: "SELECT 1"
+      register-mbeans: true
+
+# seata配置
+seata:
+  # 默认关闭，如需启用spring.datasource.dynami.seata需要同时开启
+  enabled: false
+  # Seata 应用编号，默认为 ${spring.application.name}
+  application-id: ${spring.application.name}
+  # Seata 事务组编号，用于 TC 集群名
+  tx-service-group: ${spring.application.name}-group
+  # 关闭自动代理
+  enable-auto-data-source-proxy: false
+  # 服务配置项
+  service:
+    # 虚拟组和分组的映射
+    vgroup-mapping:
+      ruoyi-system-group: default
+  config:
+    type: nacos
+    nacos:
+      serverAddr: 192.168.160.105:8848
+      group: SEATA_GROUP
+      namespace:
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: 192.168.160.105:8848
+      namespace:
+
+# mybatis配置
+mybatis:
+  # 搜索指定包别名
+  typeAliasesPackage: cn.staitech.fr
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapperLocations: classpath:mapper/**/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+# swagger配置
+swagger:
+  title: 标注模块接口文档
+  license: Powered By staitech
+  licenseUrl: http://www.staitech.cn

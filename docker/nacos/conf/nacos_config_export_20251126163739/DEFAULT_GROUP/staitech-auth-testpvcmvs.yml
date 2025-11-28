@@ -1,0 +1,14 @@
+spring: 
+  redis:
+    host: 192.168.52.164
+    port: 6379
+    password: shengtong
+    lettuce:
+      pool:
+        max-idle: 30
+        max-active: 8
+        max-wait: 10000
+        min-idle: 10
+  elasticsearch:
+    uris: http://192.168.52.164:9200
+    #uris: http://192.168.160.103:19200

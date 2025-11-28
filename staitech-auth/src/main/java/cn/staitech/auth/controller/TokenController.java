@@ -47,6 +47,15 @@ public class TokenController {
         }
     }
 
+    /**
+     * 密码校验
+     * 获取用户
+     * 用户信息存入redis
+     * 生成token
+     *
+     * @param form
+     * @return
+     */
     @ApiOperation(value = "登录2.0", notes = "登录")
     @PostMapping("/login")
     public R<LoginOut> login(@RequestBody LoginBody form) {
@@ -97,14 +106,13 @@ public class TokenController {
 
     @ApiOperation(value = "获得加密公钥", response = PublicKeyGetOut.class, notes = "获得加密公钥-wudi")
     @GetMapping("getPublicKey")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userName", value = "用户名称", required = true, dataType = "String", paramType = "query")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "userName", value = "用户名称", required = true, dataType = "String", paramType = "query")})
     public R<PublicKeyGetOut> getPublicKey(@RequestParam("userName") String userName) {
 
         String pattern = "^[a-zA-Z0-9]+$";
-        if(userName.matches(pattern)){
+        if (userName.matches(pattern)) {
             return R.ok(sysLoginService.getPublicKey(userName));
-        }else{
+        } else {
             return R.fail("USERNAME_ERROR_FORMART");
         }
 
@@ -113,9 +121,7 @@ public class TokenController {
 
     @ApiOperation(value = "首页-双语切换")
     @GetMapping("/languageSwitching")
-    public R languageSwitching(
-            @NotNull(message = "{TokenController.languageSwitching.isnull}") @RequestParam(value = "language") @ApiParam(name = "language", value = "语言类型：英文en-us；中文zh-cn", required = true) String language
-    ) {
+    public R languageSwitching(@NotNull(message = "{TokenController.languageSwitching.isnull}") @RequestParam(value = "language") @ApiParam(name = "language", value = "语言类型：英文en-us；中文zh-cn", required = true) String language) {
 
         LoginUser loginUser = SecurityUtils.getLoginUser();
         loginUser.setLanguage(language);

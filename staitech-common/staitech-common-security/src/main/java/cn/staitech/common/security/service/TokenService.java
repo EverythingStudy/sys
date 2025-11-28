@@ -46,6 +46,8 @@ public class TokenService {
 
     /**
      * 创建令牌
+     * 1.redis存储用户信息
+     * 2.生成token
      */
     public Map<String, Object> createToken(LoginUser loginUser) {
         String token = IdUtils.fastUUID();
@@ -166,19 +168,15 @@ public class TokenService {
                 redisService.deleteObject(cacheObject);
             }
             //写新的信息
-            log.error("TokenService delete redis user refreshToken:{},{},{},{}", userKey, loginUser, expireTime,
-                    TimeUnit.MINUTES);
+            log.error("TokenService delete redis user refreshToken:{},{},{},{}", userKey, loginUser, expireTime, TimeUnit.MINUTES);
             redisService.setCacheObject(userKey, loginUser, expireTime, TimeUnit.MINUTES);
-            log.error("TokenService delete redis user refreshToken:{},{},{},{}", userNameKey, userKey, expireTime,
-                    TimeUnit.MINUTES);
+            log.error("TokenService delete redis user refreshToken:{},{},{},{}", userNameKey, userKey, expireTime, TimeUnit.MINUTES);
             redisService.setCacheObject(userNameKey, userKey, expireTime, TimeUnit.MINUTES);
 
         } else {
-            log.error("TokenService delete redis user refreshToken:{},{},{},{}", userKey, loginUser, expireTime,
-                    TimeUnit.MINUTES);
+            log.error("TokenService delete redis user refreshToken:{},{},{},{}", userKey, loginUser, expireTime, TimeUnit.MINUTES);
             redisService.setCacheObject(userKey, loginUser, expireTime, TimeUnit.MINUTES);
-            log.error("TokenService delete redis user refreshToken:{},{},{},{}", userNameKey, userKey, expireTime,
-                    TimeUnit.MINUTES);
+            log.error("TokenService delete redis user refreshToken:{},{},{},{}", userNameKey, userKey, expireTime, TimeUnit.MINUTES);
             redisService.setCacheObject(userNameKey, userKey, expireTime, TimeUnit.MINUTES);
         }
 

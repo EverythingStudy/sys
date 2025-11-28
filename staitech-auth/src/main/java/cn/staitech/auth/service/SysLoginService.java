@@ -9,6 +9,7 @@ import cn.staitech.common.security.service.TokenService;
 import cn.staitech.system.api.domain.document.SysLoginInfoDoc;
 import cn.staitech.system.api.model.OrganizationAuthorization;
 import cn.staitech.system.api.model.OrganizationRes;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -46,26 +47,27 @@ import static cn.staitech.common.core.constant.UserConstants.RSA_KEYS;
  * @author staitech
  */
 @Component
+@Slf4j
 public class SysLoginService {
 
-    @Autowired
+    @Resource
     private RedisService redisService;
 
-    @Autowired
+    @Resource
     public RedisTemplate redisTemplate;
 
-    @Autowired
+    @Resource
     private RemoteLogService remoteLogService;
 
-    @Autowired
+    @Resource
     private RemoteUserService remoteUserService;
 
     @Resource
     private LoginInfoLogESRepository loginInfoLogESRepository;
 
-    @Autowired
+    @Resource
     private HttpServletRequest request;
-    @Autowired
+    @Resource
     private PasswordEncoder passwordEncoder;
 
     public Boolean userLoginVerify(String username, String pwd) {
@@ -148,8 +150,8 @@ public class SysLoginService {
         //每次解析完删除密钥对
         redisService.deleteObject(RSA_KEYS + username);
 
-        //log.info("解密后的密码" + password);
-        // 用户名或密码为空 错误
+        log.info("解密后的密码{}", password);
+        // 用户名或密码为空 错误·
         if (StringUtils.isAnyBlank(username, password)) {
             recordLogininfor(username, Constants.LOGIN_FAIL, "用户/密码必须填写");
             throw new ServiceException("用户/密码必须填写");
@@ -167,17 +169,17 @@ public class SysLoginService {
         // 查询用户信息
         R<LoginUser> userResult = remoteUserService.getUserInfo(username, SecurityConstants.INNER);
         //远程接口调用异常
-        if (R.FAIL == userResult.getCode()) {
+        if (StringUtils.isNull(userResult) || R.FAIL == userResult.getCode()) {
             throw new ServiceException(userResult.getMsg());
         }
         //用户数据为空
-        if (StringUtils.isNull(userResult) || StringUtils.isNull(userResult.getData())) {
+        if (StringUtils.isNull(userResult.getData())) {
             recordLogininfor(username, Constants.LOGIN_FAIL, "登录用户不存在");
             throw new ServiceException("登录用户：" + username + " 不存在");
         }
         //登陆人数据
         LoginUser userInfo = userResult.getData();
-        SysUser user = userResult.getData().getSysUser();
+        SysUser user = userInfo.getSysUser();
         if (!SecurityUtils.matchesPassword(password, user.getPassword())) {
             recordLogininfor(username, Constants.LOGIN_FAIL, "用户密码错误");
             throw new ServiceException("密码错误");
@@ -192,19 +194,19 @@ public class SysLoginService {
         }
         if (!user.getUserName().equalsIgnoreCase("admin")) {
             //机构id
-            long organizationId = user.getOrganizationId();
+            Long organizationId = user.getOrganizationId();
 
             //查询结构是否可用
-            R<OrganizationRes> organizationSelectRes = remoteUserService.getOrganizationById(organizationId + "", SecurityConstants.INNER);
+            R<OrganizationRes> organizationSelectRes = remoteUserService.getOrganizationById(String.valueOf(organizationId), SecurityConstants.INNER);
             //远程接口调用异常
-            if (R.FAIL == organizationSelectRes.getCode()) {
+            if (StringUtils.isNull(organizationSelectRes) || R.FAIL == organizationSelectRes.getCode()) {
                 throw new ServiceException(organizationSelectRes.getMsg());
             }
             //机构数据
             OrganizationRes resData = organizationSelectRes.getData();
 
             //机构数据为空
-            if (StringUtils.isNull(organizationSelectRes) || StringUtils.isNull(organizationSelectRes.getData())) {
+            if (StringUtils.isNull(organizationSelectRes.getData())) {
                 recordLogininfor(username, Constants.LOGIN_FAIL, "当前机构授权不存在，请联系管理员");
                 throw new ServiceException("登录用户：" + username + " 机构不存在");
             }

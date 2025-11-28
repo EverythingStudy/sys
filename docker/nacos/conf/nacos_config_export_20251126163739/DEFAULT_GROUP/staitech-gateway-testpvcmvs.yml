@@ -1,0 +1,135 @@
+spring: 
+  redis:
+    host: 192.168.52.164
+    port: 6379
+    password: shengtong
+    lettuce:
+      pool:
+        max-idle: 30
+        max-active: 8
+        max-wait: 10000
+        min-idle: 10
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          lowerCaseServiceId: true
+          enabled: true
+      routes:
+        # 认证中心
+        - id: staitech-auth
+          uri: lb://staitech-auth
+          predicates:
+            - Path=/auth/**
+          filters:
+            # 验证码处理
+            - CacheRequestFilter
+            - ValidateCodeFilter
+            - StripPrefix=1
+        # 定时任务
+        - id: staitech-job
+          uri: lb://staitech-job
+          predicates:
+            - Path=/schedule/**
+          filters:
+            - StripPrefix=1
+        # 系统模块
+        - id: staitech-system
+          uri: lb://staitech-system
+          predicates:
+            - Path=/system/**
+          filters:
+            - StripPrefix=1
+        # 文件服务
+        # - id: staitech-file
+        #   uri: lb://staitech-file
+        #   predicates:
+        #     - Path=/file/**
+        #   filters:
+        #     - StripPrefix=1
+        # 病理图片上传
+        #- id: staitech-openslide
+        #  uri: lb://staitech-openslide
+        - id: staitech-image
+          uri: lb://staitech-image
+          predicates:
+            - Path=/file/**
+          filters:
+            - StripPrefix=1
+        # annowebsocket
+        - id: staitech-annowebsocket
+          uri: lb://staitech-annowebsocket
+          predicates:
+            - Path=/annowebsocket/**
+          filters:
+            - StripPrefix=1
+        # anno
+        - id: staitech-anno
+          uri: lb://staitech-anno
+          predicates:
+            - Path=/anno/**
+          filters:
+            - StripPrefix=1
+        # mr
+        - id: staitech-mr
+          uri: lb://staitech-mr
+          predicates:
+            - Path=/mr/**
+          filters:
+            - StripPrefix=1
+        # fr
+        - id: staitech-fr
+          uri: lb://staitech-fr
+          predicates:
+            - Path=/fr/**
+          filters:
+            - StripPrefix=1            
+        # public-python-staitech-openslide
+        #- id: public-python-staitech-openslide
+        #  uri: lb://public-python-staitech-openslide
+        - id: python-staitech-openslide
+          uri: lb://python-staitech-openslide
+          predicates:
+            - Path=/slide/**
+          filters:
+            - StripPrefix=1  
+# 安全配置
+security:
+  # 验证码
+  captcha:
+    enabled: false
+    type: math
+  # 防止XSS攻击
+  xss:
+    enabled: false
+    excludeUrls:
+      - /system/notice
+  # 不校验白名单
+  ignore:
+    whites:
+      - /auth/login
+      - /auth/getPublicKey
+      - /auth/register
+      - /*/v2/api-docs
+      - /csrf
+      - /doc.html
+      - /pictureres
+      - /slide/**
+      - /file/statics/**
+      - /anno/annoBack
+      - /slidePredictionCallBack/eyeAlgorithm
+      - /statics/**
+      - /fr/api/pyResult
+      - /anno/strawTask/callBack
+      - /fr/slide/organCheck
+      - /fr/aiForecast/forecastResults
+      - /fr/api/pyTask
+
+# 图像Viewer Side负载均衡
+slideserver:
+  hosts:
+    - 1,192.168.160.103
+intelligentEvaluation: 172.31.2.70
+intelligentAnno: 172.31.2.70
+  
+      

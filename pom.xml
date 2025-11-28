@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <groupId>cn.staitech</groupId>
     <artifactId>staitech</artifactId>
     <version>1.0.0</version>
-    
+
     <name>staitech</name>
     <url>http://www.staitech.cn</url>
     <description>生仝病理图片处理微服务系统</description>
-    
+
     <properties>
         <staitech.version>1.0.0</staitech.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
-        
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <spring-boot.version>2.7.3</spring-boot.version>
         <spring-cloud.version>2021.0.1</spring-cloud.version>
         <spring-cloud-alibaba.version>2021.0.1.0</spring-cloud-alibaba.version>
@@ -41,11 +42,11 @@
         <commons-collections.version>3.2.2</commons-collections.version>
         <transmittable-thread-local.version>2.12.2</transmittable-thread-local.version>
     </properties>
-    
+
     <!-- 依赖声明 -->
     <dependencyManagement>
         <dependencies>
-            
+
             <!-- SpringCloud 微服务 -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
@@ -54,7 +55,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            
+
             <!-- SpringCloud Alibaba 微服务 -->
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
@@ -63,14 +64,14 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            
+
             <!-- Alibaba Nacos 配置 -->
             <dependency>
                 <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-client</artifactId>
                 <version>${alibaba.nacos.version}</version>
             </dependency>
-            
+
             <!-- SpringBoot 依赖配置 -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -79,28 +80,28 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            
+
             <!--  SpringBoot 监控客户端 -->
-<!--            <dependency>
-                <groupId>de.codecentric</groupId>
-                <artifactId>spring-boot-admin-starter-client</artifactId>
-                <version>${spring-boot-admin.version}</version>
-            </dependency>-->
-            
+            <!--            <dependency>
+                            <groupId>de.codecentric</groupId>
+                            <artifactId>spring-boot-admin-starter-client</artifactId>
+                            <version>${spring-boot-admin.version}</version>
+                        </dependency>-->
+
             <!-- FastDFS 分布式文件系统 -->
             <dependency>
                 <groupId>com.github.tobato</groupId>
                 <artifactId>fastdfs-client</artifactId>
                 <version>${tobato.version}</version>
             </dependency>
-            
+
             <!-- Mybatis 依赖配置 -->
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>${spring-boot.mybatis}</version>
             </dependency>
-            
+
             <!-- Swagger 依赖配置 -->
             <dependency>
                 <groupId>io.swagger</groupId>
@@ -112,145 +113,150 @@
                 <artifactId>swagger-annotations</artifactId>
                 <version>${swagger.core.version}</version>
             </dependency>
-            
+
             <!-- 验证码 -->
             <dependency>
                 <groupId>com.github.penggle</groupId>
                 <artifactId>kaptcha</artifactId>
                 <version>${kaptcha.version}</version>
             </dependency>
-            
+
             <!-- pagehelper 分页插件 -->
             <dependency>
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper-spring-boot-starter</artifactId>
                 <version>${pagehelper.boot.version}</version>
             </dependency>
-            
+
             <!-- io常用工具类 -->
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons.io.version}</version>
             </dependency>
-            
+
             <!-- excel工具 -->
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
                 <version>${poi.version}</version>
             </dependency>
-            
+
             <!-- 文件上传工具类 -->
             <dependency>
                 <groupId>commons-fileupload</groupId>
                 <artifactId>commons-fileupload</artifactId>
                 <version>${commons.fileupload.version}</version>
             </dependency>
-            
+
             <!-- 代码生成使用模板 -->
             <dependency>
                 <groupId>org.apache.velocity</groupId>
                 <artifactId>velocity-engine-core</artifactId>
                 <version>${velocity.version}</version>
             </dependency>
-            
+
             <!-- Collection 增强Java集合框架 -->
             <dependency>
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
                 <version>${commons-collections.version}</version>
             </dependency>
-            
+
             <!-- JSON 解析器和生成器 -->
             <dependency>
                 <groupId>com.alibaba.fastjson2</groupId>
                 <artifactId>fastjson2</artifactId>
                 <version>${fastjson.version}</version>
             </dependency>
-            
+
             <!-- JWT -->
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
                 <version>${jjwt.version}</version>
             </dependency>
-            
+
             <!-- 线程传递值 -->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>transmittable-thread-local</artifactId>
                 <version>${transmittable-thread-local.version}</version>
             </dependency>
-            
+
             <!-- 核心模块 -->
             <dependency>
                 <groupId>cn.staitech</groupId>
                 <artifactId>staitech-common-core</artifactId>
                 <version>${staitech.version}</version>
             </dependency>
-            
+
             <!-- 接口模块 -->
             <dependency>
                 <groupId>cn.staitech</groupId>
                 <artifactId>staitech-common-swagger</artifactId>
                 <version>${staitech.version}</version>
             </dependency>
-            
+
             <!-- 安全模块 -->
             <dependency>
                 <groupId>cn.staitech</groupId>
                 <artifactId>staitech-common-security</artifactId>
                 <version>${staitech.version}</version>
             </dependency>
-            
+
             <!-- 权限范围 -->
             <dependency>
                 <groupId>cn.staitech</groupId>
                 <artifactId>staitech-common-datascope</artifactId>
                 <version>${staitech.version}</version>
             </dependency>
-            
+
             <!-- 多数据源 -->
             <dependency>
                 <groupId>cn.staitech</groupId>
                 <artifactId>staitech-common-datasource</artifactId>
                 <version>${staitech.version}</version>
             </dependency>
-            
+
             <!-- 日志记录 -->
             <dependency>
                 <groupId>cn.staitech</groupId>
                 <artifactId>staitech-common-log</artifactId>
                 <version>${staitech.version}</version>
             </dependency>
-            
+
             <!-- 缓存服务 -->
             <dependency>
                 <groupId>cn.staitech</groupId>
                 <artifactId>staitech-common-redis</artifactId>
                 <version>${staitech.version}</version>
             </dependency>
-            
+
             <!-- 系统接口 -->
             <dependency>
                 <groupId>cn.staitech</groupId>
                 <artifactId>staitech-api-system</artifactId>
                 <version>${staitech.version}</version>
             </dependency>
-        
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>5.7.16</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
     <modules>
         <module>staitech-auth</module>
         <module>staitech-gateway</module>
         <module>staitech-modules</module>
         <module>staitech-api</module>
         <module>staitech-common</module>
+        <module>staitech-user</module>
     </modules>
     <packaging>pom</packaging>
-    
+
     <dependencies>
         <!-- bootstrap 启动器 -->
         <dependency>
@@ -258,7 +264,7 @@
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
         </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
             <plugin>

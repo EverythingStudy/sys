@@ -1,0 +1,158 @@
+# spring配置
+spring: 
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+  web:
+    resources:
+      static-locations: /home/pacmvs
+  redis:
+    host: 192.168.52.164
+    port: 6379
+    password: shengtong
+  datasource:
+    druid:
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        loginUsername: admin
+        loginPassword: admin
+    dynamic:
+      druid:
+        initial-size: 5
+        min-idle: 5
+        maxActive: 20
+        maxWait: 60000
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: SELECT 1 FROM DUAL
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        poolPreparedStatements: true
+        maxPoolPreparedStatementPerConnectionSize: 20
+        filters: stat,slf4j
+        connectionProperties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
+      datasource:
+          # 主库数据源
+          master:
+            driver-class-name: com.mysql.cj.jdbc.Driver
+            url: jdbc:mysql://192.168.160.105:3306/pathmedics?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+            username: shengtong
+            password: shengtong
+          # 从库数据源
+          # slave:
+            # username: 
+            # password: 
+            # url: 
+            # driver-class-name: 
+      # seata: true    # 开启seata代理，开启后默认每个数据源都代理，如果某个不需要代理可单独关闭
+  elasticsearch:
+    uris: http://192.168.52.164:9200
+    #username: elastic
+    #password: 123456
+
+# seata配置
+# seata:
+#   # 默认关闭，如需启用spring.datasource.dynami.seata需要同时开启
+#   enabled: false
+#   # Seata 应用编号，默认为 ${spring.application.name}
+#   application-id: ${spring.application.name}
+#   # Seata 事务组编号，用于 TC 集群名
+#   tx-service-group: ${spring.application.name}-group
+#   # 关闭自动代理
+#   enable-auto-data-source-proxy: false
+#   # 服务配置项
+#   service:
+#     # 虚拟组和分组的映射
+#     vgroup-mapping:
+#       ruoyi-system-group: default
+#   config:
+#     type: nacos
+#     nacos:
+#       serverAddr: 192.168.52.108:8848
+#       group: SEATA_GROUP
+#       namespace:
+#   registry:
+#     type: nacos
+#     nacos:
+#       application: seata-server
+#       server-addr: 192.168.52.108:8848
+#       namespace:
+
+# mybatis配置
+mybatis:
+    # 搜索指定包别名
+    typeAliasesPackage: cn.staitech.system
+    # 配置mapper的扫描，找到所有的mapper.xml映射文件
+    mapperLocations: classpath:mapper/**/*.xml
+    # configuration:
+    #   log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# swagger配置
+#swagger:
+#  title: 系统模块接口文档
+#  license: Powered By staitech
+#  licenseUrl: http://www.staitech.cn
+
+# seata配置
+seata:
+  # 默认关闭，如需启用spring.datasource.dynami.seata需要同时开启
+  enabled: false
+  # Seata 应用编号，默认为 ${spring.application.name}
+  application-id: ${spring.application.name}
+  # Seata 事务组编号，用于 TC 集群名
+  tx-service-group: ${spring.application.name}-group
+  # 关闭自动代理
+  enable-auto-data-source-proxy: false
+  # 服务配置项
+  service:
+    # 虚拟组和分组的映射
+    vgroup-mapping:
+      ruoyi-system-group: default
+  config:
+    type: nacos
+    nacos:
+      serverAddr: 192.168.160.105:8848
+      group: SEATA_GROUP
+      namespace:
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: 192.168.160.105:8848
+      namespace:
+
+
+# openSlide相关配置
+open-slide:
+  img-size: 256
+  img-type: jpg
+
+
+# 本地文件上传    
+file:
+    check: true
+    domain: http://192.168.52.164:9990
+    path:  /home/pacmvs
+    # path: D:\home\pacmvs
+    # path:  /home/pat_saas
+    scanPath: /home/pacmvs
+      
+    # 相对路径前缀
+    prefix: /statics
+    convertor:
+      base-path: /home/uploadPath/file/m3u8/
+      temp-path: /home/uploadPath/file/temp/
+      big-path: /home/uploadPath/file/big/
+      proxy: openslide/
+
+fileclient:
+  hosts:
+    - 1,192.168.52.164
+
+# 智能阅片请求python配置    
+frinspection:
+    check: false
+    image-verification: http://192.168.160.111:8003/
